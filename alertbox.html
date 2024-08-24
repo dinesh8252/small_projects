@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert box</title> 
+    <!-- cdnjs -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Bootstrap -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+
+
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        :root{
+            --dark: #34495e;
+            --light: #ffffff;
+            --success: #0abf30;
+            --error: #e24d4c;
+            --warning: #e9bd0c;
+            --info: #3498db;
+        }
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--dark);
+        }
+        .notifications{
+            position: flex;
+            top: 30px;right: 20px;
+        }
+        .notifications :where(.toast, .column) {
+            display: flex;
+            align-items: center;
+        }
+        .notifications .toast {
+            width: 400px;
+            position: relative;
+            overflow: hidden;
+            list-style: none;
+            border-radius: 4px;
+            padding: 16px 17px;
+            margin-bottom: 10px;
+            background: var(--light);
+            justify-content: space-between;
+            animation: show_toast 0.3s ease forwards;
+        }
+        .toast.success::before, .btn#success{
+            background: var(--success);
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .toast.error::before, .btn#error{
+            background: var(--error);
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .toast.warning::before, .btn#warning{
+            background: var(--warning);
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .toast.info::before, .btn#info{
+            background: var(--info);
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .toast .column i{
+            font-size: 1.75rem;
+        }
+        .toast.success .column i{
+            color: var(--success);
+        }
+        .toast.error .column i{
+            color: var(--error);
+        }
+        .toast.warning .column i{
+            color: var(--warning);
+        }
+        .toast.info .column i{
+            color: var(--info);
+        }
+        .toast .column span{
+            font-size: 1.07rem;
+            margin-left: 12px;
+        }
+        .toast i:last-child{
+            color: #aeb0d7;
+        }
+        .toast i:last-child:hover{
+            color: var(--dark);
+        }
+        .button .btn{
+            border: none;
+            outline: none;
+            cursor: pointer;
+            margin: 0 5px;
+            color: var(--light);
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+        @media  screen and (max-width: 530px) {
+            .notifications{
+                width: 95%;
+            }
+            .notifications .toast{
+                width: 100%;
+                font-size: 1rem;
+                margin-left: 20px;
+            }
+            .button .btn{
+                margin: 0 1px;
+                font-size: 1.1rem;
+                padding: 8px 15px;
+            }
+        }
+
+
+
+
+
+    </style>
+</head>
+<body>
+    <ul class="notifications"></ul>
+    <div class="buttons">
+        <button  class=" btn btn btn-info" id="info">Info</button>
+        <button  class="btn btn btn-success" id="success">Success</button>
+        <button  class="btn  btn-danger" id="error">Error</button>
+        <button  class="btn btn-warning" id="warning">Warning</button>
+
+    </div>
+
+    <script>
+        const notifications = document.querySelector(".notifications"),
+        buttons = document.querySelectorAll(".buttons .btn");
+
+        const toastDetails = {
+            timer: 3000,
+            success: {
+                icon: "fa-circle-check",
+                text: "success: this is a success toast."
+            },
+            error: {
+                icon: "fa-circle-xmark",
+                text: "error: this is a error toast."
+            },
+            warning: {
+                icon: "fa-triangle-exclamation",
+                text: "warning: this is a warning toast."
+            },
+            info: {
+                icon: "fa-circle-info",
+                text: "info: this is a info toast."
+            },
+        };
+        const removeToast = (toast) =>{
+            toast.classList.add("hide");
+            if(toast.timeoutId) clearTimeout(toast.timeoutId); //clearing timeout for the toast
+            setTimeout(() => toast.remove(), 500);  //removing the toest after 500ms
+
+        };
+        const createToast =(id) => {
+            //getting the icon and test for the toast based on the id passed
+            const { icon, text} = toastDetails[id];
+            const toast = document.createElement("li"); //creating a new "li" element for the toast
+            toast.className = `toast ${id}`;
+            toast.innerHTML = `<div class="column">
+                               <i class ="fa-solid ${icon}"></i>  
+                               <span>${text}</span>
+                               </div>
+                               <i class="fa-solid fa-xmark" onclick="removeToast(this.parentElement)"></i>`;
+            notifications.appendChild(toast);
+            toast.timeoutId = setTimeout(() => removeToast(toast), toastDetails.timer);
+
+        };
+        buttons.forEach((btn) => {
+            btn.addEventListener("click", () => createToast(btn.id));
+        });
+    </script>
+
+
+
+</body>
+
+</html>
